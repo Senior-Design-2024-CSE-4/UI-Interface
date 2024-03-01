@@ -1,1 +1,1 @@
-
+from pybelt.belt_controller import BeltVibrationPattern, BeltOrientationType
