@@ -2,9 +2,19 @@ import pybelt
 import serial
 import time
 import threading
+from xsens import*
 
 from examples_utility import belt_controller_log_to_stdout, interactive_belt_connection
 from pybelt.belt_controller import BeltController, BeltConnectionState, BeltControllerDelegate
+
+def convert_reading(degrees):
+  if degrees >= 0:
+    return degrees
+  else:
+    return 360+degrees
+
+yaw = xda.XsOutputConfiguration(xda.XDI_EulerAngles, MTi630_Settings_Orientation_Euler_SampleRate)[2]
+belt_yaw = convert_reading(yaw)
 
 def map_yaw(yaw, num_tactors):
     yaw = yaw % 360
