@@ -27,22 +27,7 @@ def map_yaw(yaw, num_tactors):
     return 0
 
 # initalize the belt
-    ###############################
-    # CONNECT TO THE BELT
-    ###############################
-    #from pybelt.belt_controller import *
-    from pybelt.belt_controller import BeltController, BeltMode, BeltConnectionState
-    #belt_controller = BeltController()
-    belt_controller = BeltController(belt_controller_delegate)
-    # connect to belt
-    belt_controller.connect(beltport_name) 
-    # check connection state
-    if belt_controller.get_connection_state() == BeltConnectionState.CONNECTED:
-        print("Connection successful.")
-        print('Connection State = ', belt_controller.get_connection_state())
-    else:
-        print("Connection failed.")
-
+   
 # vibrate each tactor in turning
 bTestTactor_1 = 0
 if bTestTactor_1 == 1:
