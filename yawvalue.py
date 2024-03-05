@@ -22,12 +22,26 @@ def map_yaw(yaw, num_tactors):
     for tactor_id in range(1, num_tactors + 1):
         lower = (tactor_id - 1) * tactor_range
         upper = tactor_id * tactor_range
-        if lower <= yaw < upper
+        if lower <= yaw < upper:
             return tactor_id
     return 0
-num_tactors = 16
 
 # initalize the belt
+    ###############################
+    # CONNECT TO THE BELT
+    ###############################
+    #from pybelt.belt_controller import *
+    from pybelt.belt_controller import BeltController, BeltMode, BeltConnectionState
+    #belt_controller = BeltController()
+    belt_controller = BeltController(belt_controller_delegate)
+    # connect to belt
+    belt_controller.connect(beltport_name) 
+    # check connection state
+    if belt_controller.get_connection_state() == BeltConnectionState.CONNECTED:
+        print("Connection successful.")
+        print('Connection State = ', belt_controller.get_connection_state())
+    else:
+        print("Connection failed.")
 
 # vibrate each tactor in turning
 bTestTactor_1 = 0
