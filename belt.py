@@ -52,26 +52,39 @@ def main():
     # Change orientation notification period
     belt_controller.set_orientation_notifications(True)
 
-    client = Client('127.0.0.1', 12345)
-    client.connect('belt', 'l')
-    time.sleep(5)
+    xsens_client = Client('127.0.0.1', 12345)
+    xsens_client.connect('xbelt', 'l')
+    unity_client = Client('127.0.0.1', 12345)
+    unity_client.connect('ubelt', 'l')
+    time.sleep(10)
+    zero = 0
+    zeroed = -1
 
     print("Press a button on the belt to quit.")
     while belt_controller.get_connection_state() == BeltConnectionState.CONNECTED and not button_pressed_event.is_set():
         # Delay for terminal display (not necessary if other processing)
-        heading = float(client.listen_to_server())
+        # heading = float(client.listen_to_server())
+        heading = float(xsens_client.listen_to_server())
+        unity = float(unity_client.listen_to_server())
         heading += 180
+        if zero == 0:
+            zeroed = heading
+            zero=1
         print(heading)
         time.sleep(0.005)
         # # Retrieve orientation with lock
         with orientation_lock:
             heading = heading
+            # heading = unity
             notification_period = belt_orientation_update_period.total_seconds()
         # Process orientation
         belt_controller.send_pulse_command(
                     channel_index=0,
                     orientation_type=BeltOrientationType.ANGLE,
-                    orientation=int(heading),
+                    orientation=int(heading) - 360,
+                    # orientation=int(heading),
+                    # orientation=180,
+                    # orientation=int(unity) - 360,
                     intensity=None,
                     on_duration_ms=150,
                     pulse_period=500,
