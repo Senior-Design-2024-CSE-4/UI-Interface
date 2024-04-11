@@ -53,15 +53,27 @@ def main():
     belt_controller.set_orientation_notifications(True)
 
     client = Client('127.0.0.1', 12345)
-    client.connect('belt', 'l')
+    # client.connect('xsens', 'l')
+    client.connect('ubelt', 'l')
     time.sleep(5)
 
     print("Press a button on the belt to quit.")
     while belt_controller.get_connection_state() == BeltConnectionState.CONNECTED and not button_pressed_event.is_set():
         # Delay for terminal display (not necessary if other processing)
-        heading = float(client.listen_to_server())
-        heading += 180
-        print(heading)
+        # heading = float(client.listen_to_server())
+        
+        temp = client.listen_to_server()   
+        print(temp)
+
+        if temp == '':
+            heading = -1
+        else:
+            rcv = temp.split(',')
+            a = int(rcv[0])
+            b = int(rcv[1])
+            heading = float(rcv[2])
+            intensity = int(rcv[3])
+        # print(a, b, heading, intensity)
         time.sleep(0.005)
         # # Retrieve orientation with lock
         with orientation_lock:
@@ -71,8 +83,8 @@ def main():
         belt_controller.send_pulse_command(
                     channel_index=0,
                     orientation_type=BeltOrientationType.ANGLE,
-                    orientation=int(heading),
-                    intensity=None,
+                    orientation=int(heading)-360,
+                    intensity=intensity,
                     on_duration_ms=150,
                     pulse_period=500,
                     pulse_iterations=3,
@@ -82,7 +94,7 @@ def main():
                     exclusive_channel=False,
                     clear_other_channels=False
                 )
-        print("\rBelt heading: {}°\t (period: {:.3f}s)            ".format(heading, notification_period), end="")
+        # print("\rBelt heading: {}°\t (period: {:.3f}s)            ".format(heading, notification_period), end="")
 
     belt_controller.set_orientation_notifications(False)
     belt_controller.disconnect_belt()

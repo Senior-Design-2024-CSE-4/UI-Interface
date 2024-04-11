@@ -42,7 +42,7 @@ class Client:
             print('received confirmation')
 
     def listen_to_server(self):
-        data = self.client.recv(10).decode()
+        data = self.client.recv(11).decode()
         self.client.send('confirmation'.encode())
         return data
 
